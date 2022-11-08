@@ -1,0 +1,452 @@
+
+            {
+                "name": "0022_sp_s_019_rollup_acc_continuing_staging",
+                "description": "0022_Dependent_Dimensions",
+                "type": "SqlPoolStoredProcedure",
+                "dependsOn": [
+                    {
+                        "activity": "0022_sp_s_001_distinrollup_ap",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    },
+                    {
+                        "activity": "0022_sp_d_student_course_schedule",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "sqlPool": {
+                    "referenceName": "envisionsqlpl1",
+                    "type": "SqlPoolReference"
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[acuity].[sp_s_019_rollup_acc_continuing_staging]"
+                }
+            },
+            {
+                "name": "0022_sp_s_020_rollup_acc_continuing_staging",
+                "description": "0022_Dependent_Dimensions",
+                "type": "SqlPoolStoredProcedure",
+                "dependsOn": [
+                    {
+                        "activity": "0022_sp_s_001_distinrollup_ap",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    },
+                    {
+                        "activity": "0022_sp_d_student_course_schedule",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "sqlPool": {
+                    "referenceName": "envisionsqlpl1",
+                    "type": "SqlPoolReference"
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[acuity].[sp_s_020_rollup_acc_continuing_staging]"
+                }
+            },
+            {
+                "name": "0022_sp_s_021_rollup_acc_continuing",
+                "description": "0022_Dependent_Dimensions",
+                "type": "SqlPoolStoredProcedure",
+                "dependsOn": [
+                    {
+                        "activity": "0022_sp_s_020_rollup_acc_continuing_staging",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "sqlPool": {
+                    "referenceName": "envisionsqlpl1",
+                    "type": "SqlPoolReference"
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[acuity].[sp_s_021_rollup_acc_continuing]"
+                }
+            },
+            {
+                "name": "0022_sp_s_022_rollup_acc_active_staging",
+                "description": "0022_Dependent_Dimensions",
+                "type": "SqlPoolStoredProcedure",
+                "dependsOn": [
+                    {
+                        "activity": "0022_sp_s_001_distinrollup_ap",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    },
+                    {
+                        "activity": "0022_sp_d_student_course_schedule",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "sqlPool": {
+                    "referenceName": "envisionsqlpl1",
+                    "type": "SqlPoolReference"
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[acuity].[sp_s_022_rollup_acc_active_staging]"
+                }
+            },
+            {
+                "name": "0022_sp_s_023_rollup_acc_active_staging",
+                "description": "0022_Dependent_Dimensions",
+                "type": "SqlPoolStoredProcedure",
+                "dependsOn": [
+                    {
+                        "activity": "0022_sp_s_022_rollup_acc_active_staging",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "sqlPool": {
+                    "referenceName": "envisionsqlpl1",
+                    "type": "SqlPoolReference"
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[acuity].[sp_s_023_rollup_acc_active_staging]"
+                }
+            },
+            {
+                "name": "0022_sp_s_024_rollup_acc_active",
+                "description": "0022_Dependent_Dimensions",
+                "type": "SqlPoolStoredProcedure",
+                "dependsOn": [
+                    {
+                        "activity": "0022_sp_s_023_rollup_acc_active_stagingg",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "sqlPool": {
+                    "referenceName": "envisionsqlpl1",
+                    "type": "SqlPoolReference"
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[acuity].[sp_s_024_rollup_acc_active]"
+                }
+            },
+            {
+                "name": "0012_sp_s_cpi_003_h_scrubbed_vendor",
+                "description": "0012_CPI",
+                "type": "SqlPoolStoredProcedure",
+                "dependsOn": [
+
+                ],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "sqlPool": {
+                    "referenceName": "envisionsqlpl1",
+                    "type": "SqlPoolReference"
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[acuity].[sp_s_cpi_003_h_scrubbed_vendor]"
+                }
+            },
+            {
+                "name": "0012_sp_s_cpi_004_h_scrubbed_month",
+                "description": "0012_CPI",
+                "type": "SqlPoolStoredProcedure",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "sqlPool": {
+                    "referenceName": "envisionsqlpl1",
+                    "type": "SqlPoolReference"
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[acuity].[sp_s_cpi_004_h_scrubbed_month]"
+                }
+            },
+            {
+                "name": "0012_sp_s_cpi_005_h_scrubbed",
+                "description": "0012_CPI",
+                "type": "SqlPoolStoredProcedure",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "sqlPool": {
+                    "referenceName": "envisionsqlpl1",
+                    "type": "SqlPoolReference"
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[acuity].[sp_s_cpi_005_h_scrubbed]"
+                }
+            },
+            {
+                "name": "0012_sp_s_cpi_006_h_scrubbed_utm",
+                "description": "0012_CPI",
+                "type": "SqlPoolStoredProcedure",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "sqlPool": {
+                    "referenceName": "envisionsqlpl1",
+                    "type": "SqlPoolReference"
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[acuity].[sp_s_cpi_006_h_scrubbed_utm]"
+                }
+            },
+            {
+                "name": "0012_sp_s_cpi_007_h_job_number",
+                "description": "0012_CPI",
+                "type": "SqlPoolStoredProcedure",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "sqlPool": {
+                    "referenceName": "envisionsqlpl1",
+                    "type": "SqlPoolReference"
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[acuity].[sp_s_cpi_007_h_job_number]"
+                }
+            },
+            {
+                "name": "0012_sp_s_cpi_008_h_cpi_source",
+                "description": "0012_CPI",
+                "type": "SqlPoolStoredProcedure",
+                "dependsOn": [
+                    {
+                        "activity": "0012_sp_s_cpi_005_h_scrubbed",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "sqlPool": {
+                    "referenceName": "envisionsqlpl1",
+                    "type": "SqlPoolReference"
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[acuity].[sp_s_cpi_008_h_cpi_source]"
+                }
+            },
+            {
+                "name": "0012_sp_s_cpi_009_h_cpi_utm",
+                "description": "0012_CPI",
+                "type": "SqlPoolStoredProcedure",
+                "dependsOn": [
+                    {
+                        "activity": "0012_sp_s_cpi_006_h_scrubbed_utm",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "sqlPool": {
+                    "referenceName": "envisionsqlpl1",
+                    "type": "SqlPoolReference"
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[acuity].[sp_s_cpi_009_h_cpi_utm]"
+                }
+            },
+            {
+                "name": "0012_sp_s_cpi_010_h_cpi_month",
+                "description": "0012_CPI",
+                "type": "SqlPoolStoredProcedure",
+                "dependsOn": [
+                    {
+                        "activity": "0012_sp_s_cpi_004_h_scrubbed_month",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "sqlPool": {
+                    "referenceName": "envisionsqlpl1",
+                    "type": "SqlPoolReference"
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[acuity].[sp_s_cpi_010_h_cpi_month]"
+                }
+            },
+            {
+                "name": "0012_sp_s_cpi_012_h_cpi",
+                "description": "0012_CPI",
+                "type": "SqlPoolStoredProcedure",
+                "dependsOn": [
+                    {
+                        "activity": "0012_sp_s_cpi_005_h_scrubbed",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "sqlPool": {
+                    "referenceName": "envisionsqlpl1",
+                    "type": "SqlPoolReference"
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[acuity].[sp_s_cpi_012_h_cpi]"
+                }
+            },
+            {
+                "name": "0012_sp_s_cpi_024_inquiry_cpi",
+                "description": "0012_CPI",
+                "type": "SqlPoolStoredProcedure",
+                "dependsOn": [
+                    {
+                        "activity": "001_sp_s_staging_012_inquiry_search_field",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    },
+                    {
+                        "activity": "0012_sp_s_cpi_009_h_cpi_utm",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    },
+                    {
+                        "activity": "0012_sp_s_cpi_012_h_cpi",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    },
+                    {
+                        "activity": "0012_sp_s_cpi_008_h_cpi_source",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "sqlPool": {
+                    "referenceName": "envisionsqlpl1",
+                    "type": "SqlPoolReference"
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[acuity].[sp_s_cpi_024_inquiry_cpi]"
+                }
+            }

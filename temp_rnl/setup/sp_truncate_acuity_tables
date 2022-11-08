@@ -1,0 +1,46 @@
+IF OBJECT_ID ( 'acuity.sp_truncate_acuity_tables', 'P' ) IS NOT NULL   
+    DROP PROCEDURE acuity.sp_truncate_acuity_tables;  
+GO  
+
+CREATE PROCEDURE acuity.sp_truncate_acuity_tables
+AS
+BEGIN
+        IF OBJECT_ID(N'tempdb..#tmpTablesList') IS NOT NULL
+        BEGIN
+            DROP TABLE #tmpTablesList
+        END;
+
+        Create table #tmpTablesList
+        with (
+        DISTRIBUTION = ROUND_ROBIN
+        )
+        AS 
+        SELECT name FROM sys.objects obj
+        WHERE type = 'U' AND schema_id = 16 AND name <> 'execution_history'; --AND name in ('d_hold','d_client'); -- schema_id is acuity
+
+        DECLARE @name VARCHAR(50); -- table name
+        DECLARE @counter int = 1;
+        DECLARE @recordCount int = (SELECT COUNT(1) from #tmpTablesList);
+
+        WHILE @counter <= @recordCount 
+        BEGIN  
+            SET @name = (SELECT [name]
+                        FROM(SELECT *, ROW_NUMBER() OVER(ORDER BY [name]) AS RN
+                             FROM #tmpTablesList) as T
+                        WHERE RN = @counter)
+            
+            -- Truncate tables
+
+            DECLARE @truncate_sql_stmt  NVARCHAR(MAX),
+                    @schema_name NVARCHAR(MAX);
+            
+            SET  @schema_name = 'acuity'; -- schema_name
+            SET @truncate_sql_stmt = 'TRUNCATE TABLE ' + @schema_name + '.' + @name;
+
+            --EXEC sp_executesql @truncate_sql_stmt;  
+            
+            PRINT @truncate_sql_stmt 
+
+            SET @counter = @counter + 1;
+        END
+END

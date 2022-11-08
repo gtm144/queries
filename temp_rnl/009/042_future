@@ -1,0 +1,102 @@
+IF OBJECT_ID ( '[acuity].[sp_s_rmb_042_future_inquiries_distribution]' ) IS NOT NULL   
+    DROP PROCEDURE [acuity].[sp_s_rmb_042_future_inquiries_distribution];  
+GO  
+
+CREATE PROC [acuity].[sp_s_rmb_042_future_inquiries_distribution] AS BEGIN
+    BEGIN TRANSACTION
+
+        DECLARE @ErrorMessage NVARCHAR(4000);  
+        DECLARE @ErrorSeverity INT;  
+        DECLARE @ErrorState INT; 
+        DECLARE @initial_time DATETIME;
+        DECLARE @final_time DATETIME;
+        DECLARE @time_diff_seconds FLOAT;
+        DECLARE @table_name NVARCHAR(4000); 
+        DECLARE @validate_query_result INT;
+
+        BEGIN TRY  
+
+
+            SET @initial_time  = CURRENT_TIMESTAMP;
+		    SET @table_name = 's_rmb_042_future_inquiries_distribution';
+
+            
+            DELETE FROM [acuity].[s_rmb_042_future_inquiries_distribution]; 
+
+            INSERT INTO [acuity].[s_rmb_042_future_inquiries_distribution]
+            SELECT 
+                [s_rmb_039_future_raw_inquires_channel].[client_id] AS client_id
+				,[s_rmb_039_future_raw_inquires_channel].[channel_id] AS channel_id
+				,[s_rmb_039_future_raw_inquires_channel].[month] AS month
+				,[s_rmb_039_future_raw_inquires_channel].[year] AS year
+				,[s_rmb_039_future_raw_inquires_channel].[channel_starts_needed] AS channel_starts_needed
+				,[s_rmb_039_future_raw_inquires_channel].[channel_raw_needed] AS channel_raw_needed
+				,[s_campf_018_start_curve].[month_prior] AS month_prior
+				,[s_campf_018_start_curve].[start_percent] AS start_percent
+				,CEILING([s_rmb_039_future_raw_inquires_channel].[channel_raw_needed]
+					*[s_campf_018_start_curve].[start_percent]) AS channel_raw_month_distribution
+				,CASE WHEN [s_rmb_039_future_raw_inquires_channel].[month]
+					-[s_campf_018_start_curve].[month_prior] >= 1
+					THEN [s_rmb_039_future_raw_inquires_channel].[month]
+						-[s_campf_018_start_curve].[month_prior]
+					ELSE 12 + ([s_rmb_039_future_raw_inquires_channel].[month]
+						-[s_campf_018_start_curve].[month_prior])
+					END AS plan_month
+				,CASE WHEN [s_rmb_039_future_raw_inquires_channel].[month]
+					-[s_campf_018_start_curve].[month_prior] >= 1
+					THEN [s_rmb_039_future_raw_inquires_channel].[year]
+					ELSE [s_rmb_039_future_raw_inquires_channel].[year] - 1
+					END AS plan_year
+            FROM [acuity].[s_rmb_039_future_raw_inquires_channel]
+            INNER JOIN 
+                [acuity].[s_campf_018_start_curve]
+                ON
+                    [s_campf_018_start_curve].[client_id] =
+                    [s_rmb_039_future_raw_inquires_channel].[client_id]
+                AND [s_campf_018_start_curve].[channel_id] =
+                    [s_rmb_039_future_raw_inquires_channel].[channel_id]
+                        
+            SET @validate_query_result =  (SELECT count(*) FROM [acuity].[s_rmb_042_future_inquiries_distribution]);
+
+			IF @validate_query_result = 0
+                BEGIN
+                RAISERROR ('There are no rows in the source table', -- Message text.
+                            16, -- Severity,
+                            1 -- State,
+                            );
+                END ;
+
+            SET @final_time  = CURRENT_TIMESTAMP;
+            SET @time_diff_seconds = DATEDIFF(microsecond,@initial_time,@final_time) /1000000.0 ;
+
+            INSERT INTO acuity.execution_history
+                values(@table_name,@validate_query_result,'Table has been updated successfully',@time_diff_seconds , 'true', @final_time)
+
+
+            COMMIT; 
+            PRINT 'Table has been updated successfully'
+        END TRY  
+        BEGIN CATCH  
+            ROLLBACK;
+            
+            SELECT   
+                @ErrorMessage = ERROR_MESSAGE(),  
+                @ErrorSeverity = ERROR_SEVERITY(),  
+                @ErrorState = ERROR_STATE();  
+        
+            RAISERROR (@ErrorMessage, 
+                    @ErrorSeverity, 
+                    @ErrorState 
+                    ); 
+
+            SET @final_time  = CURRENT_TIMESTAMP;
+            SET @time_diff_seconds = DATEDIFF(microsecond,@initial_time,@final_time) /1000000.0 ;
+            
+            INSERT INTO acuity.execution_history
+            values(@table_name,@validate_query_result,@ErrorMessage,@time_diff_seconds , 'false', @final_time)
+
+        END CATCH
+END
+GO
+
+EXEC [acuity].[sp_s_rmb_042_future_inquiries_distribution]

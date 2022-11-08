@@ -1,0 +1,87 @@
+IF OBJECT_ID ( 'acuity.sp_count_columns_table', 'P' ) IS NOT NULL   
+    DROP PROCEDURE acuity.sp_count_columns_table;  
+GO  
+
+CREATE PROCEDURE acuity.sp_count_columns_table
+@schema_name VARCHAR(250),
+@table_name VARCHAR(250)
+AS
+BEGIN
+        IF OBJECT_ID(N'tempdb..#tmpColumnList') IS NOT NULL
+        BEGIN
+            DROP TABLE #tmpColumnList
+        END;
+
+         IF OBJECT_ID(N'tempdb..#tmpCount') IS NOT NULL
+        BEGIN
+            DROP TABLE #tmpCount
+        END;
+
+        -- Create tmpColumnList table script, stored in variable @create_tmpcount_stmt
+        DECLARE @create_tmpcount_stmt  NVARCHAR(MAX)
+        
+        SET @create_tmpcount_stmt = '
+        CREATE TABLE #tmpColumnList
+        WITH (
+        DISTRIBUTION = ROUND_ROBIN
+        )
+        AS 
+        SELECT 
+            col.name
+        FROM sys.tables as tab
+            INNER JOIN sys.columns AS col ON tab.object_id = col.object_id
+            LEFT JOIN sys.types AS t ON col.user_type_id = t.user_type_id
+        WHERE tab.name = ''' + @table_name +  ''' 
+        AND schema_name(tab.schema_id) = '''+@schema_name+'''';
+
+        print(@create_tmpcount_stmt )
+
+        EXEC sp_executesql @create_tmpcount_stmt; 
+
+        -- Create tmpcount table
+        CREATE TABLE #tmpCount(
+        Column_Name NVARCHAR(250),
+        Count_Rows_Not_Null INT,
+        Distinct_Rows INT,
+        Count_All INT,
+        Count_Nulls INT
+        )
+        WITH (
+        DISTRIBUTION = ROUND_ROBIN
+        );
+
+        DECLARE @name VARCHAR(50); -- table name
+        DECLARE @counter int = 1;
+        DECLARE @recordCount int =  (SELECT COUNT(1) from #tmpColumnList);
+
+
+        -- While loop for each column name in the table #tmpColumnList
+        WHILE @counter <= @recordCount 
+        BEGIN  
+
+            SET @name = (SELECT [name]
+                        FROM(SELECT *, ROW_NUMBER() OVER(ORDER BY [name]) AS RN
+                             FROM #tmpColumnList) as T
+                        WHERE RN = @counter)
+            
+            -- Declare @count_sql_stmt
+            DECLARE @count_sql_stmt  NVARCHAR(MAX)
+            
+            --print(SELECT ISNUMERIC(@name))
+
+            -- Set the variable @count_sql_stmt with the statement -  INSERT INTO TEMPORAL TABLE tmpCount the Variable @name in the while loop and the rowcount for this column
+            SET @count_sql_stmt = 'INSERT INTO #tmpCount  SELECT ''' +  @name + ''' AS table_name,'  + ' COUNT([' +  @name + ']) AS Count_Rows_Not_Null, ' + 'COUNT(DISTINCT([' +  @name + '])) AS Distinct_Rows, ' + 'COUNT(1) AS Count_All' + ',COUNT(1) - COUNT([' +  @name + ']) AS Count_Nulls FROM '  + @schema_name + '.' + @table_name;
+
+            -- Execute sqlstatement stored in variable @count_sql_stmt
+            EXEC sp_executesql @count_sql_stmt; 
+
+            SET @counter = @counter + 1;
+
+    
+        END
+        SELECT * FROM #tmpCount ORDER BY Column_Name ASC;
+END
+GO
+
+EXEC acuity.sp_count_columns_table  @schema_name = 'planning', @table_name = 's_ep_allocation'
+

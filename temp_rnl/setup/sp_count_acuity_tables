@@ -1,0 +1,60 @@
+IF OBJECT_ID ( 'acuity.sp_count_acuity_tables', 'P' ) IS NOT NULL   
+    DROP PROCEDURE acuity.sp_count_acuity_tables;  
+GO  
+
+CREATE PROCEDURE acuity.sp_count_acuity_tables
+AS
+BEGIN
+        IF OBJECT_ID(N'tempdb..#tmpTablesList') IS NOT NULL
+        BEGIN
+            DROP TABLE #tmpTablesList
+        END;
+
+         IF OBJECT_ID(N'tempdb..#tmpCount') IS NOT NULL
+        BEGIN
+            DROP TABLE #tmpCount
+        END;
+
+         -- Create tmpTablesList table
+        Create table #tmpTablesList
+        with (
+        DISTRIBUTION = ROUND_ROBIN
+        )
+        AS 
+        SELECT name FROM sys.objects obj
+        WHERE type = 'U' AND schema_id = 16 AND name <> 'execution_history';-- AND name in ('d_hold','d_client'); -- schema_id is acuity
+
+        -- Create tmpcount table
+        Create table #tmpCount(
+        table_name NVARCHAR(250),
+        count_rows INT
+        )
+        with (
+        DISTRIBUTION = ROUND_ROBIN
+        );
+
+        DECLARE @name VARCHAR(50); -- table name
+        DECLARE @counter int = 1;
+        DECLARE @recordCount int = (SELECT COUNT(1) from #tmpTablesList);
+
+        WHILE @counter <= @recordCount 
+        BEGIN  
+            SET @name = (SELECT [name]
+                        FROM(SELECT *, ROW_NUMBER() OVER(ORDER BY [name]) AS RN
+                             FROM #tmpTablesList) as T
+                        WHERE RN = @counter)
+            
+            -- Count tables
+
+            DECLARE @count_sql_stmt  NVARCHAR(MAX),
+                    @schema_name NVARCHAR(MAX)
+            
+            SET  @schema_name = 'acuity'; -- schema_name
+            SET @count_sql_stmt = 'INSERT INTO #tmpCount  SELECT ''' +  @name + ''' AS table_name '  + ',COUNT(*) AS count_rows FROM '  + @schema_name + '.' + @name;
+
+            EXEC sp_executesql @count_sql_stmt; 
+
+            SET @counter = @counter + 1;
+        END
+        Select * from #tmpCount order by count_rows ASC;
+END
